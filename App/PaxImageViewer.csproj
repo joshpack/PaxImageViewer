@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>PaxImageViewer.App</RootNamespace>
+    <AssemblyName>PaxImageViewer</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon Condition="Exists('Assets\PaxImageViewer.ico')">Assets\PaxImageViewer.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Native AOT: starts in a blink and needs no .NET install. -->
+    <PublishAot>true</PublishAot>
+    <!-- The SDK's bundled 10.0.10 AOT runtime has a published security fix in a later patch; bake in the patched one. -->
+    <RuntimeFrameworkVersion>10.0.14</RuntimeFrameworkVersion>
+    <OptimizationPreference>Speed</OptimizationPreference>
+    <StackTraceSupport>false</StackTraceSupport>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.4" />
+    <ProjectReference Include="..\Core\PaxImageViewer.Core.csproj" />
+  </ItemGroup>
+
+</Project>
