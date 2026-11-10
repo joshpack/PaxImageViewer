@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 using Avalonia.Media.Imaging;
 using SkiaSharp;
 
-namespace PaxImageViewer;
+namespace pxdImageViewer;
 
 /// <summary>
 /// Windows Imaging Component, called through raw COM vtables (works with native AOT, no COM wrappers). It decodes

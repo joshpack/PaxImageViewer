@@ -1,7 +1,7 @@
 using Avalonia.Media.Imaging;
 using SkiaSharp;
 
-namespace PaxImageViewer;
+namespace pxdImageViewer;
 
 /// <summary>
 /// Decodes image files at full resolution, straight into the bitmaps that get drawn (no extra copies). Skia handles the

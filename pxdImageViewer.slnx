@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/App/">
+    <Project Path="App/pxdImageViewer.csproj" />
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="Core/pxdImageViewer.Core.csproj" />
+  </Folder>
+</Solution>

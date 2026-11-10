@@ -3,7 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using SkiaSharp;
 
-namespace PaxImageViewer;
+namespace pxdImageViewer;
 
 /// <summary>A decoded image: one bitmap, or every frame of an animation with its delay.</summary>
 public sealed class ViewerImage : IDisposable

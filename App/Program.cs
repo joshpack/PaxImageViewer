@@ -6,7 +6,7 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Themes.Fluent;
 
-namespace PaxImageViewer.App;
+namespace pxdImageViewer.App;
 
 internal static class Program
 {
@@ -32,7 +32,7 @@ internal static class Program
         }
         StartPath = args.FirstOrDefault(a => !a.StartsWith("--", StringComparison.Ordinal));
         StartSlideshow = args.Contains("--slideshow");
-        if (OperatingSystem.IsWindows()) SetCurrentProcessExplicitAppUserModelID("PAX.ImageViewer");
+        if (OperatingSystem.IsWindows()) SetCurrentProcessExplicitAppUserModelID("pxd.ImageViewer");
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 

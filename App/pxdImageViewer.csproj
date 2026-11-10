@@ -5,11 +5,11 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>PaxImageViewer.App</RootNamespace>
-    <AssemblyName>PaxImageViewer</AssemblyName>
+    <RootNamespace>pxdImageViewer.App</RootNamespace>
+    <AssemblyName>pxdImageViewer</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon Condition="Exists('Assets\PaxImageViewer.ico')">Assets\PaxImageViewer.ico</ApplicationIcon>
-    <Version>1.0.0</Version>
+    <ApplicationIcon Condition="Exists('Assets\pxdImageViewer.ico')">Assets\pxdImageViewer.ico</ApplicationIcon>
+    <Version>1.1.0</Version>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <InvariantGlobalization>true</InvariantGlobalization>
     <!-- Native AOT: starts in a blink and needs no .NET install. -->
@@ -26,7 +26,7 @@
     <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.4" />
-    <ProjectReference Include="..\Core\PaxImageViewer.Core.csproj" />
+    <ProjectReference Include="..\Core\pxdImageViewer.Core.csproj" />
   </ItemGroup>
 
 </Project>

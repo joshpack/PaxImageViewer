@@ -6,11 +6,11 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Path = Avalonia.Controls.Shapes.Path;
 
-namespace PaxImageViewer;
+namespace pxdImageViewer;
 
 /// <summary>
 /// The viewer's colours. It's always dark (photos look best on near-black); the accent follows the host app
-/// (PAX Commander passes its own) and is recoloured in place, so a change reaches open windows.
+/// (pxd Commander passes its own) and is recoloured in place, so a change reaches open windows.
 /// </summary>
 public static class ViewerTheme
 {

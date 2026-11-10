@@ -1,11 +1,11 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace PaxImageViewer;
+namespace pxdImageViewer;
 
 /// <summary>
-/// The viewer's preferences, shared by the standalone app and every app that hosts the viewer (PAX Commander), so the
-/// slideshow speed and zoom choices follow you. Saved as JSON in %APPDATA%\PaxImageViewer\settings.json.
+/// The viewer's preferences, shared by the standalone app and every app that hosts the viewer (pxd Commander), so the
+/// slideshow speed and zoom choices follow you. Saved as JSON in %APPDATA%\pxdImageViewer\settings.json.
 /// </summary>
 public sealed class ViewerSettings
 {
@@ -41,9 +41,9 @@ public sealed class ViewerSettings
 
     /// <summary>Where the settings live; a host can point it elsewhere (tests use a throwaway folder).</summary>
     public static string FilePath { get; set; } =
-        Environment.GetEnvironmentVariable("PAXVIEW_DATA") is { Length: > 0 } custom
+        Environment.GetEnvironmentVariable("PXDVIEW_DATA") is { Length: > 0 } custom
             ? Path.Combine(custom, "settings.json")
-            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "PaxImageViewer", "settings.json");
+            : Path.Combine(ViewerMigration.DataFolder(), "settings.json");
 
     private static bool _loaded;
     private static Timer? _timer;

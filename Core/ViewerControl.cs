@@ -8,7 +8,7 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 
-namespace PaxImageViewer;
+namespace pxdImageViewer;
 
 /// <summary>
 /// The whole viewer: the canvas, a title row, a floating toolbar, and the folder it steps through (with a slideshow).

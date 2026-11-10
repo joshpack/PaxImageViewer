@@ -6,7 +6,7 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.VisualTree;
 
-namespace PaxImageViewer;
+namespace pxdImageViewer;
 
 /// <summary>A viewer in its own window, with its own title bar (the image gets every pixel below it).</summary>
 public sealed class ViewerWindow : Window
@@ -24,7 +24,7 @@ public sealed class ViewerWindow : Window
     public ViewerWindow(bool canOpenFiles = false)
     {
         ViewerSettings.EnsureLoaded();
-        Title = "PAX Image Viewer";
+        Title = "pxd Image Viewer";
         Width = 1200;
         Height = 800;
         MinWidth = 420;
@@ -40,7 +40,7 @@ public sealed class ViewerWindow : Window
 
         Viewer.CloseRequested += Close;
         Viewer.FullScreenRequested += SetFullScreen;
-        Viewer.CurrentChanged += p => Title = p is null ? "PAX Image Viewer" : System.IO.Path.GetFileName(p) + " – PAX Image Viewer";
+        Viewer.CurrentChanged += p => Title = p is null ? "pxd Image Viewer" : System.IO.Path.GetFileName(p) + " – pxd Image Viewer";
         if (canOpenFiles) Viewer.PickFile = PickAsync;
 
         RememberPlacement();

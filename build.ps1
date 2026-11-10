@@ -2,7 +2,7 @@
 # The native linker can't work from a network-mapped drive, so the build runs from a copy on the local disk.
 param(
     [string]$Out = "$PSScriptRoot\dist",
-    [string]$Work = "C:\dev\PaxImageViewer-build"
+    [string]$Work = "C:\dev\pxdImageViewer-build"
 )
 $ErrorActionPreference = 'Stop'
 
@@ -13,7 +13,7 @@ if ((Test-Path "$installer\vswhere.exe") -and ($env:PATH -notlike "*$installer*"
 robocopy $PSScriptRoot $Work /MIR /XD bin obj dist .git .vs /NFL /NDL /NJH /NJS /NP | Out-Null
 if ($LASTEXITCODE -ge 8) { throw "Copying the source failed ($LASTEXITCODE)." }
 
-dotnet publish "$Work\App\PaxImageViewer.csproj" -c Release -r win-x64 -o "$Work\publish" --nologo
+dotnet publish "$Work\App\pxdImageViewer.csproj" -c Release -r win-x64 -o "$Work\publish" --nologo
 if ($LASTEXITCODE -ne 0) { throw "Publish failed." }
 
 New-Item -ItemType Directory -Force $Out | Out-Null

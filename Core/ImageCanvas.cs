@@ -5,7 +5,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 
-namespace PaxImageViewer;
+namespace pxdImageViewer;
 
 /// <summary>Zoom and position of a view, kept relative so it carries over to an image of another size.</summary>
 public readonly record struct ViewState(bool Fit, double Zoom, double CenterX, double CenterY);

@@ -1,8 +1,0 @@
-<Solution>
-  <Folder Name="/App/">
-    <Project Path="App/PaxImageViewer.csproj" />
-  </Folder>
-  <Folder Name="/Core/">
-    <Project Path="Core/PaxImageViewer.Core.csproj" />
-  </Folder>
-</Solution>

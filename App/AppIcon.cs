@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
-namespace PaxImageViewer.App;
+namespace pxdImageViewer.App;
 
 /// <summary>
 /// The app mark, drawn in code: a framed landscape with a magnifying lens over its corner. Rendered to the .ico at build

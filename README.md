@@ -1,11 +1,11 @@
-# PAX Image Viewer
+# pxd Image Viewer
 
 A fast, lightweight image viewer for Windows. It zooms from fit-to-window all the way to 51,200%, steps through
 every image in the folder, and runs slideshows that can keep your zoom level from one image to the next.
 
-It's a standalone app, and it's also the image viewer built into [PAX Commander](https://github.com/joshpack/PaxCommander).
+It's a standalone app, and it's also the image viewer built into [pxd Commander](https://github.com/joshpack/pxdCommander).
 
-![PAX Image Viewer showing a photo with its floating toolbar](docs/screenshots/viewer.png)
+![pxd Image Viewer showing a photo with its floating toolbar](docs/screenshots/viewer.png)
 
 ## Features
 
@@ -57,8 +57,9 @@ Needs the .NET 10 SDK and, for the native build, Visual Studio's C++ build tools
 .\build.ps1    # native single exe in .\dist
 ```
 
-`PaxImageViewer.exe <image-or-folder> [--slideshow]` opens a file or folder directly.
+`pxdImageViewer.exe <image-or-folder> [--slideshow]` opens a file or folder directly.
 `--self-test <image> <report.txt>` checks a build without opening a window.
+`dotnet run --project tools\Screenshots -c Release -- docs\screenshots` re-renders `viewer.png` headless (Avalonia.Headless, made-up sample images in a temp folder).
 
 ## Layout
 

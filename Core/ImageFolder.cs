@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace PaxImageViewer;
+namespace pxdImageViewer;
 
 /// <summary>The images in a folder, in Explorer's order ("img2" before "img10").</summary>
 public static partial class ImageFolder
