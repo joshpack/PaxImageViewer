@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text;
+using System.Text.RegularExpressions;
 using Avalonia;
 using Avalonia.Media.Imaging;
 
@@ -68,6 +69,9 @@ internal static class SelfTest
             rtb.Save(png);
             Check(new FileInfo(png).Length > 1000, $"viewer renders off-screen at 800% ({png})");
             viewer.Canvas.Show(null);
+
+            // Off the UI thread: pxdUpdate awaits without ConfigureAwait, and the Avalonia context here is never pumped.
+            Task.Run(() => UpdateChecks(Path.Combine(dir, "update"), Check)).Wait();
             Directory.Delete(dir, true);
         }
         catch (Exception ex)
@@ -76,5 +80,82 @@ internal static class SelfTest
         }
         sb.AppendLine(fails == 0 ? "ALL PASSED" : $"{fails} FAILED");
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Update before start (pxdUpdate): never for --self-test, and a fake release on a local HttpListener: found,
+    /// a bad checksum changes nothing, the files in a temp app folder are swapped. Nothing real is updated or started.
+    /// </summary>
+    private static void UpdateChecks(string root, Action<bool, string> check)
+    {
+        check(!pxdStandard.pxdUpdate.BeforeStart(Program.Repo, Program.AssetPattern, ["--self-test"]), "update before start: never during --self-test");
+        check(Regex.IsMatch("pxdImageViewer-1.1.1-win-x64.zip", Program.AssetPattern) && !Regex.IsMatch("pxdImageViewer-1.1.1-win-x64.zip.sha256", Program.AssetPattern),
+            "update asset pattern matches the release zip only");
+
+        var app = Path.Combine(root, "app");
+        var pkg = Path.Combine(root, "pkg");
+        Directory.CreateDirectory(app);
+        Directory.CreateDirectory(pkg);
+        File.WriteAllText(Path.Combine(app, "pxdImageViewer.exe"), "old exe");
+        File.WriteAllText(Path.Combine(app, "libSkiaSharp.dll"), "old lib");
+        File.WriteAllText(Path.Combine(pkg, "pxdImageViewer.exe"), "new exe");
+        File.WriteAllText(Path.Combine(pkg, "libSkiaSharp.dll"), "new lib");
+        var zip = Path.Combine(root, "pxdImageViewer-9.9.9-win-x64.zip");
+        System.IO.Compression.ZipFile.CreateFromDirectory(pkg, zip);
+        var hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(zip))).ToLowerInvariant();
+
+        var badSum = false;
+        var prefix = $"http://127.0.0.1:{new Random().Next(41000, 49000)}/";
+        using var listener = new System.Net.HttpListener();
+        listener.Prefixes.Add(prefix);
+        listener.Start();
+        var serving = Task.Run(async () =>
+        {
+            while (listener.IsListening)
+            {
+                System.Net.HttpListenerContext ctx;
+                try { ctx = await listener.GetContextAsync(); } catch { return; }
+                byte[] body = ctx.Request.Url!.AbsolutePath switch
+                {
+                    "/repos/joshpack/pxdImageViewer/releases/latest" => Encoding.UTF8.GetBytes(
+                        $"{{\"tag_name\":\"v9.9.9\",\"assets\":[{{\"name\":\"pxdImageViewer-9.9.9-win-x64.zip\",\"browser_download_url\":\"{prefix}zip\"}}," +
+                        $"{{\"name\":\"pxdImageViewer-9.9.9-win-x64.zip.sha256\",\"browser_download_url\":\"{prefix}sum\"}}]}}"),
+                    "/zip" => File.ReadAllBytes(zip),
+                    "/sum" => Encoding.ASCII.GetBytes((badSum ? new string('0', 64) : hash) + "  pxdImageViewer-9.9.9-win-x64.zip"),
+                    _ => [],
+                };
+                ctx.Response.StatusCode = body.Length == 0 ? 404 : 200;
+                try { await ctx.Response.OutputStream.WriteAsync(body); } catch { }
+                ctx.Response.Close();
+            }
+        });
+
+        Environment.SetEnvironmentVariable("PXD_UPDATE_API", prefix.TrimEnd('/'));
+        try
+        {
+            var plan = pxdStandard.pxdUpdate.FindUpdateAsync(Program.Repo, Program.AssetPattern, new Version(1, 1, 1)).GetAwaiter().GetResult();
+            check(plan is { Sum: not null }, "update: newer release found (with checksum)");
+            check(pxdStandard.pxdUpdate.FindUpdateAsync(Program.Repo, Program.AssetPattern, new Version(9, 9, 9)).GetAwaiter().GetResult() is null, "update: current copy left alone");
+            var exe = Path.Combine(app, "pxdImageViewer.exe");
+            badSum = true;
+            var refused = !pxdStandard.pxdUpdate.ApplyAsync(plan!.Value.Zip, plan.Value.Sum, app, exe, [], start: false).GetAwaiter().GetResult();
+            check(refused && File.ReadAllText(exe) == "old exe", "update: a bad checksum changes nothing");
+            badSum = false;
+            var ok = pxdStandard.pxdUpdate.ApplyAsync(plan.Value.Zip, plan.Value.Sum, app, exe, [], start: false).GetAwaiter().GetResult();
+            check(ok && File.ReadAllText(exe) == "new exe" && File.ReadAllText(Path.Combine(app, "libSkiaSharp.dll")) == "new lib", "update: exe and native libs swapped");
+            pxdStandard.pxdUpdate.CleanUp(app);
+            check(Directory.GetFiles(app, "*.pxdold").Length == 0, "update: set-aside files removed at next start");
+            check(pxdStandard.pxdUpdate.ThisVersion() >= new Version(1, 1, 1), $"update: this copy reads its own version ({pxdStandard.pxdUpdate.ThisVersion()})");
+        }
+        catch (Exception ex)
+        {
+            check(false, "update checks crashed: " + ex.Message);
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("PXD_UPDATE_API", null);
+            listener.Stop();
+            serving.Wait(2000);
+        }
     }
 }

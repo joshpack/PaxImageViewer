@@ -19,6 +19,7 @@ It's a standalone app, and it's also the image viewer built into [pxd Commander]
 - **Formats:** JPEG, PNG, GIF and WebP (animated too), BMP, ICO, and through Windows' codecs TIFF, JPEG XR, HEIC,
   AVIF, JPEG XL and camera RAW (as far as the installed codecs allow). Camera photos are turned upright automatically.
 - Lossless rotate, full screen, a details panel, drag and drop, and settings that are remembered.
+- **Stays up to date:** when a newer release is out, the standalone app updates itself before it opens (set `PXD_NO_UPDATE=1` to stop that).
 
 ![Zoomed far into a pixel-art image, with the pixel grid](docs/screenshots/pixels.png)
 

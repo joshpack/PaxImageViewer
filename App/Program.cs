@@ -13,9 +13,18 @@ internal static class Program
     public static string? StartPath { get; private set; }
     public static bool StartSlideshow { get; private set; }
 
+    public const string Repo = "joshpack/pxdImageViewer";
+    public const string AssetPattern = @"^pxdImageViewer-.*-win-x64\.zip$";
+
     [STAThread]
     public static void Main(string[] args)
     {
+        // Update before the app opens: a newer release replaces the files in this folder and starts again with the same
+        // arguments. pxdUpdate skips --self-test, dev builds (bin\ / obj\), PXD_NO_UPDATE=1, offline and a slow GitHub;
+        // the --write-icon build step never updates.
+        if (args is not ["--write-icon", _] && pxdStandard.pxdUpdate.BeforeStart(Repo, AssetPattern, args))
+            return;
+
         // Build step: "--write-icon <file.ico>" renders the app icon and exits.
         if (args is ["--write-icon", var ico])
         {

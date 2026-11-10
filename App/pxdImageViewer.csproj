@@ -9,7 +9,7 @@
     <AssemblyName>pxdImageViewer</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon Condition="Exists('Assets\pxdImageViewer.ico')">Assets\pxdImageViewer.ico</ApplicationIcon>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <InvariantGlobalization>true</InvariantGlobalization>
     <!-- Native AOT: starts in a blink and needs no .NET install. -->
