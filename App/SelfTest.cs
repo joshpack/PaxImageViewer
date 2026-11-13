@@ -104,7 +104,13 @@ internal static class SelfTest
         System.IO.Compression.ZipFile.CreateFromDirectory(pkg, zip);
         var hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(zip))).ToLowerInvariant();
 
+        Environment.SetEnvironmentVariable("PXD_UPDATE_API", null);
+        check(pxdStandard.pxdUpdate.ApiBases().SequenceEqual(["https://pxdtek.com/gh", "https://api.github.com"]), "update: release info from pxdtek.com first, GitHub as the fallback");
+        check(pxdStandard.pxdUpdate.GitHubCopy("https://pxdtek.com/dl/pxdImageViewer/v1.1.2/pxdImageViewer-1.1.2-win-x64.zip") ==
+              "https://github.com/pxdtek/pxdImageViewer/releases/download/v1.1.2/pxdImageViewer-1.1.2-win-x64.zip", "update: a pxdtek.com download falls back to the same file on GitHub");
+
         var badSum = false;
+        var blocked = false;
         var prefix = $"http://127.0.0.1:{new Random().Next(41000, 49000)}/";
         using var listener = new System.Net.HttpListener();
         listener.Prefixes.Add(prefix);
@@ -115,9 +121,17 @@ internal static class SelfTest
             {
                 System.Net.HttpListenerContext ctx;
                 try { ctx = await listener.GetContextAsync(); } catch { return; }
+                if (blocked && ctx.Request.Url!.AbsolutePath is "/repos/pxdtek/pxdImageViewer/releases/latest" or "/zip")
+                {
+                    // What a web filter answers instead of the real thing.
+                    ctx.Response.ContentType = "text/html; charset=utf-8";
+                    try { await ctx.Response.OutputStream.WriteAsync(Encoding.UTF8.GetBytes("<!DOCTYPE html><html><body>Blocked by your network.</body></html>")); } catch { }
+                    ctx.Response.Close();
+                    continue;
+                }
                 byte[] body = ctx.Request.Url!.AbsolutePath switch
                 {
-                    "/repos/joshpack/pxdImageViewer/releases/latest" => Encoding.UTF8.GetBytes(
+                    "/repos/pxdtek/pxdImageViewer/releases/latest" => Encoding.UTF8.GetBytes(
                         $"{{\"tag_name\":\"v9.9.9\",\"assets\":[{{\"name\":\"pxdImageViewer-9.9.9-win-x64.zip\",\"browser_download_url\":\"{prefix}zip\"}}," +
                         $"{{\"name\":\"pxdImageViewer-9.9.9-win-x64.zip.sha256\",\"browser_download_url\":\"{prefix}sum\"}}]}}"),
                     "/zip" => File.ReadAllBytes(zip),
@@ -137,6 +151,12 @@ internal static class SelfTest
             check(plan is { Sum: not null }, "update: newer release found (with checksum)");
             check(pxdStandard.pxdUpdate.FindUpdateAsync(Program.Repo, Program.AssetPattern, new Version(9, 9, 9)).GetAwaiter().GetResult() is null, "update: current copy left alone");
             var exe = Path.Combine(app, "pxdImageViewer.exe");
+            blocked = true;
+            check(pxdStandard.pxdUpdate.FindUpdateAsync(Program.Repo, Program.AssetPattern, new Version(1, 1, 1)).GetAwaiter().GetResult() is null,
+                "update: a block page is never read as release info");
+            var notApplied = !pxdStandard.pxdUpdate.ApplyAsync(plan!.Value.Zip, plan.Value.Sum, app, exe, [], start: false).GetAwaiter().GetResult();
+            check(notApplied && File.ReadAllText(exe) == "old exe" && Directory.GetFiles(app, "*.pxdold").Length == 0, "update: a block page instead of the zip changes nothing");
+            blocked = false;
             badSum = true;
             var refused = !pxdStandard.pxdUpdate.ApplyAsync(plan!.Value.Zip, plan.Value.Sum, app, exe, [], start: false).GetAwaiter().GetResult();
             check(refused && File.ReadAllText(exe) == "old exe", "update: a bad checksum changes nothing");

@@ -9,7 +9,7 @@
     <AssemblyName>pxdImageViewer.Core</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsAotCompatible>true</IsAotCompatible>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <!-- Windows-only parts (WIC, StrCmpLogicalW) are guarded at runtime. -->
     <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>

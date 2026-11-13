@@ -3,7 +3,7 @@
 A fast, lightweight image viewer for Windows. It zooms from fit-to-window all the way to 51,200%, steps through
 every image in the folder, and runs slideshows that can keep your zoom level from one image to the next.
 
-It's a standalone app, and it's also the image viewer built into [pxd Commander](https://github.com/joshpack/pxdCommander).
+It's a standalone app, and it's also the image viewer built into [pxd Commander](https://github.com/pxdtek/pxdCommander).
 
 ![pxd Image Viewer showing a photo with its floating toolbar](docs/screenshots/viewer.png)
 

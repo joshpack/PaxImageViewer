@@ -13,7 +13,7 @@ internal static class Program
     public static string? StartPath { get; private set; }
     public static bool StartSlideshow { get; private set; }
 
-    public const string Repo = "joshpack/pxdImageViewer";
+    public const string Repo = "pxdtek/pxdImageViewer";
     public const string AssetPattern = @"^pxdImageViewer-.*-win-x64\.zip$";
 
     [STAThread]
